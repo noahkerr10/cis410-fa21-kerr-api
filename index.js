@@ -1,5 +1,7 @@
 const express = require("express");
+const dbConnectExec = require("./dbConnectExec.js");
 
+const db = require("./dbConnectExec.js");
 const app = express();
 
 app.listen(5001, () => {
@@ -12,4 +14,21 @@ app.get("/hi", (req, res) => {
 
 app.get("/", (req, res) => {
   res.send("API is running");
+});
+
+app.get("/games", (req, res) => {
+  db.executeQuery(
+    `SELECT *
+    From Game1
+    LEFT Join genre
+    on genre.GenrePK = Game1.GenreFK`
+  )
+    .then((theResults) => {
+      res.status(200).send(theResults);
+    })
+
+    .catch((myError) => {
+      console.log(myError);
+      res.status(500).send();
+    });
 });
