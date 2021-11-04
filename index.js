@@ -32,3 +32,27 @@ app.get("/games", (req, res) => {
       res.status(500).send();
     });
 });
+
+app.get("/games/:pk", (req, res) => {
+  let pk = req.params.pk;
+  //   console.log(pk);
+  let myQuery = `SELECT *
+From Game1
+LEFT Join genre
+on genre.GenrePK = Game1.GenreFK
+where GamePK = ${pk}`;
+
+  db.executeQuery(myQuery)
+    .then((result) => {
+      console.log(result);
+      if (result[0]) {
+        res.send(result[0]);
+      } else {
+        res.status(404).send(`bad request`);
+      }
+    })
+    .catch((err) => {
+      console.log("Error somthing went worng", err);
+      res.status(500).send();
+    });
+});
